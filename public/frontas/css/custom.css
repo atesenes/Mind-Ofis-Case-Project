@@ -1,0 +1,93 @@
+/*============================================================================================*/
+/* Your custom styles below */
+/*============================================================================================*/
+.interestalert{
+    background: #34c70f;
+    color: white;
+    padding: 5px;
+    border-radius: 10px;
+    width: 300px;
+    position: absolute;
+    top: 15px;
+    left: 306px;
+    z-index: 1;
+}
+.iletisim{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+input {
+    outline: none;
+}
+input[id=headersearch]::placeholder{
+    opacity: 0;
+}
+input[id=headersearch]:focus::placeholder{
+    opacity: 1;
+}
+input[id=headersearch] {
+    -webkit-appearance: textfield;
+    -webkit-box-sizing: content-box;
+    font-family: inherit;
+    font-size: 100%;
+}
+
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button {
+    display: none;
+}
+input[id=headersearch] {
+    background: url(../img/search.svg) no-repeat 10px 8px;
+    border: none;
+    padding: 9px 10px 9px 32px;
+    width: 55px;
+    -webkit-border-radius: 10em;
+    -moz-border-radius: 10em;
+    border-radius: 10em;
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    transition: all .5s;
+}
+
+input[id=headersearch]:focus {
+    width: 130px;
+    background-color: #fff;
+    border-color: #66CC75;
+    -webkit-box-shadow: 0 0 5px rgba(109, 207, 246, .5);
+    -moz-box-shadow: 0 0 5px rgba(109, 207, 246, .5);
+    box-shadow: 0 0 5px rgba(109, 207, 246, .5);
+}
+
+input:-moz-placeholder {
+    color: #999;
+}
+
+input::-webkit-input-placeholder {
+    color: #999;
+}
+
+/* Demo 2 */
+
+#hsearch input[id=headersearch] {
+    width: 20px;
+    color: transparent;
+    cursor: pointer;
+}
+
+#hsearch input[id=headersearch]:focus {
+    opacity: 1;
+    width: 150px;
+    color: #f0f0f0;
+    background-color: rgba(255, 255, 255, 0.4);
+    cursor: auto;
+    padding-left: 38px;
+}
+
+#hsearch input:-moz-placeholder {
+    color: #fff;
+}
+
+#hsearch input::-webkit-input-placeholder {
+    color: #fff;
+}
