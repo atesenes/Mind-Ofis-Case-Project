@@ -15,9 +15,27 @@ use Illuminate\Support\Facades\Route;
 //FRONT ROUTE
 Route::group(['prefix'=>'/','namespace'=>'/','middleware'=>'frontDilSorgu'],function (){
     Route::get('',[\App\Http\Controllers\frontIndexController::class,'frontIndex'])->name('frontIndex');
-    
-    
-    
+    Route::get('/etkinlikler',[\App\Http\Controllers\frontIndexController::class,'frontHaberler'])->name('frontHaberler');
+    Route::get('/etkinlik/{id?}',[\App\Http\Controllers\frontIndexController::class,'frontHaberDetay'])->name('frontHaberDetay');
+    Route::get('/contact',[\App\Http\Controllers\frontIndexController::class,'frontContact'])->name('frontContact');
+    Route::get('/dildegis/{id}',[\App\Http\Controllers\frontIndexController::class,'frontDilDegis'])->name('frontDilDegis');
+    Route::get('/privacy-policy',[\App\Http\Controllers\frontIndexController::class,'frontPrivacyPolicy'])->name('frontPrivacyPolicy');
+    Route::get('/terms-and-conditions',[\App\Http\Controllers\frontIndexController::class,'frontgizliliksozlesmesiPage'])->name('frontgizliliksozlesmesiPage');
+    Route::get('/cookies-policy',[\App\Http\Controllers\frontIndexController::class,'frontCookiesPolicy'])->name('frontCookiesPolicy');
+    Route::get('/about-us',[\App\Http\Controllers\frontIndexController::class,'aboutUs'])->name('aboutUs');
+    //Blog
+    Route::get('/blogLists',[\App\Http\Controllers\frontBlogController::class,'index'])->name('frontBlogList');
+    Route::get('/blog/{blog}',[\App\Http\Controllers\frontBlogController::class,'detail'])->name('frontBlogDetail');
+
+    //Kayıt Ol
+    Route::get('/register',[\App\Http\Controllers\frontIndexController::class,'frontRegister'])->name('frontRegister');
+    Route::post('/registerpost',[\App\Http\Controllers\frontIndexController::class,'frontRegisterPost'])->name('frontRegisterPost');
+    //Giriş Yap
+    Route::get('/login',[\App\Http\Controllers\frontIndexController::class,'frontLogin'])->name('frontLogin');
+    Route::post('/loginpost',[\App\Http\Controllers\frontIndexController::class,'frontLoginPost'])->name('frontLoginPost');
+});
+Route::group(['prefix'=>'/','namespace'=>'/','middleware'=>'frontDilSorgu','frontGirisSorgu'],function (){
+    Route::get('/logout',[\App\Http\Controllers\frontIndexController::class,'frontLogout'])->name('frontLogout');
 
 });
 //ADMİN ROUTE

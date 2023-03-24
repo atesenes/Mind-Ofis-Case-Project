@@ -1,277 +1,411 @@
 (function ($) {
-
 	"use strict";
-	
-	$(window).on('load', function () {
-		$('[data-loader="circle-side"]').fadeOut(); // will first fade out the loading animation
-		$('#preloader').delay(350).fadeOut('slow'); // will fade out the white DIV that covers the website.
-		$('body').delay(350);
-		$('#hero_in h1,#hero_in form').addClass('animated');
-		$('.hero_single, #hero_in').addClass('start_bg_zoom');
-		$(window).scroll();
+
+/*=============================================
+	=    		 Preloader			      =
+=============================================*/
+function preloader() {
+	$('#preloader').delay(0).fadeOut();
+};
+
+$(window).on('load', function () {
+	preloader();
+	mainSlider();
+	aosAnimation();
+	wowAnimation();
+});
+
+
+/*=============================================
+	=          Data Background               =
+=============================================*/
+$("[data-background]").each(function () {
+	$(this).css("background-image", "url(" + $(this).attr("data-background") + ")")
+})
+
+
+/*=============================================
+	=    		Mobile Menu			      =
+=============================================*/
+//SubMenu Dropdown Toggle
+if ($('.menu-area li.menu-item-has-children ul').length) {
+	$('.menu-area .navigation li.menu-item-has-children').append('<div class="dropdown-btn"><span class="fas fa-angle-down"></span></div>');
+}
+//Mobile Nav Hide Show
+if ($('.mobile-menu').length) {
+
+	var mobileMenuContent = $('.menu-area .main-menu').html();
+	$('.mobile-menu .menu-box .menu-outer').append(mobileMenuContent);
+
+	//Dropdown Button
+	$('.mobile-menu li.menu-item-has-children .dropdown-btn').on('click', function () {
+		$(this).toggleClass('open');
+		$(this).prev('ul').slideToggle(500);
 	});
-	
-	// Sticky nav
-	$(window).on('scroll', function () {
-		if ($(this).scrollTop() > 1) {
-			$('.header').addClass("sticky");
-		} else {
-			$('.header').removeClass("sticky");
-		}
+	//Menu Toggle Btn
+	$('.mobile-nav-toggler').on('click', function () {
+		$('body').addClass('mobile-menu-visible');
 	});
-	
-	// Sticky sidebar
-	$('#sidebar').theiaStickySidebar({
-		additionalMarginTop: 150
+
+	//Menu Toggle Btn
+	$('.menu-backdrop, .mobile-menu .close-btn').on('click', function () {
+		$('body').removeClass('mobile-menu-visible');
 	});
-	
-	// Mobile Mmenu
-	var $menu = $("nav#menu").mmenu({
-		"extensions": ["pagedim-black"],
-		counters: false,
-		keyboardNavigation: {
-			enable: true,
-			enhance: true
-		},
-		navbar: {
-			title: 'MENU'
-		},
-		navbars: [{position:'bottom',content: ['<a href="#0">© 2017 Udema</a>']}]}, 
-		{
-		// configuration
-		clone: true,
-		classNames: {
-			fixedElements: {
-				fixed: "menu_2",
-				sticky: "sticky"
-			}
-		}
-	});
-	var $icon = $("#hamburger");
-	var API = $menu.data("mmenu");
-	$icon.on("click", function () {
-		API.open();
-	});
-	API.bind("open:finish", function () {
-		setTimeout(function () {
-			$icon.addClass("is-active");
-		}, 100);
-	});
-	API.bind("close:finish", function () {
-		setTimeout(function () {
-			$icon.removeClass("is-active");
-		}, 100);
-	});
-    
-    // Header button explore
-    $('a[href^="#"].btn_explore').on('click', function (e) {
-			e.preventDefault();
-			var target = this.hash;
-			var $target = $(target);
-			$('html, body').stop().animate({
-				'scrollTop': $target.offset().top
-			}, 800, 'swing', function () {
-				window.location.hash = target;
-			});
-		});
-	
-	// WoW - animation on scroll
-	var wow = new WOW(
-	  {
-		boxClass:     'wow',      // animated element css class (default is wow)
-		animateClass: 'animated', // animation css class (default is animated)
-		offset:       0,          // distance to the element when triggering the animation (default is 0)
-		mobile:       true,       // trigger animations on mobile devices (default is true)
-		live:         true,       // act on asynchronously loaded content (default is true)
-		callback:     function(box) {
-		  // the callback is fired every time an animation is started
-		  // the argument that is passed in is the DOM node being animated
-		},
-		scrollContainer: null // optional scroll container selector, otherwise use window
-	  }
-	);
-	wow.init();
-	
-	/*  video popups */
-	$('.video').magnificPopup({type:'iframe'});	/* video modal*/
-	
-	/*  Image popups */
-	$('.magnific-gallery').each(function () {
-		$(this).magnificPopup({
-			delegate: 'a',
-			type: 'image',
-			gallery: {
-				enabled: true
-			},
-			removalDelay: 500, //delay removal by X to allow out-animation
-			callbacks: {
-				beforeOpen: function () {
-					// just a hack that adds mfp-anim class to markup 
-					this.st.image.markup = this.st.image.markup.replace('mfp-figure', 'mfp-figure mfp-with-anim');
-					this.st.mainClass = this.st.el.attr('data-effect');
-				}
-			},
-			closeOnContentClick: true,
-			midClick: true // allow opening popup on middle mouse click. Always set it to true if you don't provide alternative source.
-		});
-	});
-	
-	// tooltips
-	 $('[data-toggle="tooltip"]').tooltip();
-	
-	// Accordion
-	function toggleChevron(e) {
-		$(e.target)
-			.prev('.card-header')
-			.find("i.indicator")
-			.toggleClass('ti-minus ti-plus');
+}
+
+
+/*=============================================
+	=     Menu sticky & Scroll to top      =
+=============================================*/
+$(window).on('scroll', function () {
+	var scroll = $(window).scrollTop();
+	if (scroll < 245) {
+		$("#sticky-header").removeClass("sticky-menu");
+		$('.scroll-to-target').removeClass('open');
+
+	} else {
+		$("#sticky-header").addClass("sticky-menu");
+		$('.scroll-to-target').addClass('open');
 	}
-	$('#accordion_lessons').on('hidden.bs.collapse shown.bs.collapse', toggleChevron);
-		function toggleIcon(e) {
-        $(e.target)
-            .prev('.panel-heading')
-            .find(".indicator")
-            .toggleClass('ti-minus ti-plus');
-    }
-    // Accordion 2 (updated v1.2)
-	$('.accordion_2').on('hidden.bs.collapse shown.bs.collapse', toggleChevron);
-		function toggleIcon(e) {
-        $(e.target)
-            .prev('.panel-heading')
-            .find(".indicator")
-            .toggleClass('ti-minus ti-plus');
-    }
-    $('.panel-group').on('hidden.bs.collapse', toggleIcon);
-    $('.panel-group').on('shown.bs.collapse', toggleIcon);
-	
-	  
-	// Input field effect
-	(function () {
-		if (!String.prototype.trim) {
-			(function () {
-				// Make sure we trim BOM and NBSP
-				var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-				String.prototype.trim = function () {
-					return this.replace(rtrim, '');
-				};
-			})();
-		}
-		[].slice.call(document.querySelectorAll('input.input_field, textarea.input_field')).forEach(function (inputEl) {
-			// in case the input is already filled..
-			if (inputEl.value.trim() !== '') {
-				classie.add(inputEl.parentNode, 'input--filled');
-			}
+});
 
-			// events:
-			inputEl.addEventListener('focus', onInputFocus);
-			inputEl.addEventListener('blur', onInputBlur);
+
+/*=============================================
+	=    		 Scroll Up  	         =
+=============================================*/
+if ($('.scroll-to-target').length) {
+  $(".scroll-to-target").on('click', function () {
+    var target = $(this).attr('data-target');
+    // animate
+    $('html, body').animate({
+      scrollTop: $(target).offset().top
+    }, 1000);
+
+  });
+}
+
+
+/*=============================================
+	=             Main Slider                =
+=============================================*/
+function mainSlider() {
+	var BasicSlider = $('.slider-active');
+	BasicSlider.on('init', function (e, slick) {
+		var $firstAnimatingElements = $('.slider-item:first-child').find('[data-animation]');
+		doAnimations($firstAnimatingElements);
+	});
+	BasicSlider.on('beforeChange', function (e, slick, currentSlide, nextSlide) {
+		var $animatingElements = $('.slider-item[data-slick-index="' + nextSlide + '"]').find('[data-animation]');
+		doAnimations($animatingElements);
+	});
+	BasicSlider.slick({
+		autoplay: true,
+		autoplaySpeed: 5000,
+		dots: false,
+		fade: true,
+		arrows: false,
+		responsive: [
+			{ breakpoint: 767, settings: { dots: false, arrows: false } }
+		]
+	});
+
+	function doAnimations(elements) {
+		var animationEndEvents = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+		elements.each(function () {
+			var $this = $(this);
+			var $animationDelay = $this.data('delay');
+			var $animationType = 'animated ' + $this.data('animation');
+			$this.css({
+				'animation-delay': $animationDelay,
+				'-webkit-animation-delay': $animationDelay
+			});
+			$this.addClass($animationType).one(animationEndEvents, function () {
+				$this.removeClass($animationType);
+			});
 		});
-		function onInputFocus(ev) {
-			classie.add(ev.target.parentNode, 'input--filled');
-		}
-		function onInputBlur(ev) {
-			if (ev.target.value.trim() === '') {
-				classie.remove(ev.target.parentNode, 'input--filled');
-			}
-		}
-	})();
-	
-	// Selectbox
-	$(".selectbox").selectbox();
+	}
+}
 
-	// Check and radio input styles
-	$('input.icheck').iCheck({
-		checkboxClass: 'icheckbox_square-grey',
-		radioClass: 'iradio_square-grey'
-	});
-	
-	// Carousels
-	$('#carousel').owlCarousel({
-		center: true,
-		items: 2,
-		loop: true,
-		margin: 10,
-		responsive: {
-			0: {
-				items: 1,
-				dots:false
-			},
-			600: {
-				items: 2
-			},
-			1000: {
-				items: 4
+
+/*=============================================
+	=         Up Coming Movie Active        =
+=============================================*/
+$('.ucm-active').owlCarousel({
+	loop: true,
+	margin: 30,
+	items: 4,
+	autoplay: false,
+	autoplayTimeout: 5000,
+	autoplaySpeed: 1000,
+	navText: ['<i class="fas fa-angle-left"></i>', '<i class="fas fa-angle-right"></i>'],
+	nav: true,
+	dots: false,
+	responsive: {
+		0: {
+			items: 1,
+			nav: false,
+		},
+		575: {
+			items: 2,
+			nav: false,
+		},
+		768: {
+			items: 2,
+			nav: false,
+		},
+		992: {
+			items: 3,
+		},
+		1200: {
+			items: 4
+		},
+	}
+});
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	$(".ucm-active").trigger('refresh.owl.carousel');
+});
+
+
+/*=============================================
+	=         Up Coming Movie Active        =
+=============================================*/
+$('.ucm-active-two').owlCarousel({
+	loop: true,
+	margin: 45,
+	items: 5,
+	autoplay: false,
+	autoplayTimeout: 5000,
+	autoplaySpeed: 1000,
+	navText: ['<i class="fas fa-angle-left"></i>', '<i class="fas fa-angle-right"></i>'],
+	nav: true,
+	dots: false,
+	responsive: {
+		0: {
+			items: 1,
+			nav: false,
+			margin: 30,
+		},
+		575: {
+			items: 2,
+			nav: false,
+			margin: 30,
+		},
+		768: {
+			items: 2,
+			nav: false,
+			margin: 30,
+		},
+		992: {
+			items: 3,
+			margin: 30,
+		},
+		1200: {
+			items: 5
+		},
+	}
+});
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	$(".ucm-active-two").trigger('refresh.owl.carousel');
+});
+
+
+/*=============================================
+	=    		Brand Active		      =
+=============================================*/
+$('.brand-active').slick({
+	dots: false,
+	infinite: true,
+	speed: 1000,
+	autoplay: true,
+	arrows: false,
+	slidesToShow: 6,
+	slidesToScroll: 2,
+	responsive: [
+		{
+			breakpoint: 1200,
+			settings: {
+				slidesToShow: 5,
+				slidesToScroll: 1,
+				infinite: true,
 			}
+		},
+		{
+			breakpoint: 992,
+			settings: {
+				slidesToShow: 4,
+				slidesToScroll: 1
+			}
+		},
+		{
+			breakpoint: 767,
+			settings: {
+				slidesToShow: 3,
+				slidesToScroll: 1,
+				arrows: false,
+			}
+		},
+		{
+			breakpoint: 575,
+			settings: {
+				slidesToShow: 2,
+				slidesToScroll: 1,
+				arrows: false,
+			}
+		},
+	]
+});
+
+
+/*=============================================
+	=         Gallery-active           =
+=============================================*/
+$('.gallery-active').slick({
+	centerMode: true,
+	centerPadding: '350px',
+	slidesToShow: 1,
+	prevArrow: '<span class="slick-prev"><i class="fas fa-caret-left"></i> previous</span>',
+	nextArrow: '<span class="slick-next">Next <i class="fas fa-caret-right"></i></span>',
+	appendArrows: ".slider-nav",
+	responsive: [
+		{
+			breakpoint: 1800,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				centerPadding: '220px',
+				infinite: true,
+			}
+		},
+		{
+			breakpoint: 1500,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				centerPadding: '180px',
+				infinite: true,
+			}
+		},
+		{
+			breakpoint: 1200,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				centerPadding: '160px',
+				arrows: false,
+				infinite: true,
+			}
+		},
+		{
+			breakpoint: 992,
+			settings: {
+				slidesToShow: 1,
+				centerPadding: '60px',
+				arrows: false,
+				slidesToScroll: 1
+			}
+		},
+		{
+			breakpoint: 767,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				centerPadding: '0px',
+				arrows: false,
+			}
+		},
+		{
+			breakpoint: 575,
+			settings: {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				centerPadding: '0px',
+				arrows: false,
+			}
+		},
+	]
+});
+
+/*=============================================
+	=    		Odometer Active  	       =
+=============================================*/
+$('.odometer').appear(function (e) {
+	var odo = $(".odometer");
+	odo.each(function () {
+		var countNumber = $(this).attr("data-count");
+		$(this).html(countNumber);
+	});
+});
+
+
+/*=============================================
+	=    		Magnific Popup		      =
+=============================================*/
+$('.popup-image').magnificPopup({
+	type: 'image',
+	gallery: {
+		enabled: true
+	}
+});
+
+/* magnificPopup video view */
+$('.popup-video').magnificPopup({
+	type: 'iframe'
+});
+
+
+/*=============================================
+	=    		Isotope	Active  	      =
+=============================================*/
+$('.tr-movie-active').imagesLoaded(function () {
+	// init Isotope
+	var $grid = $('.tr-movie-active').isotope({
+		itemSelector: '.grid-item',
+		percentPosition: true,
+		masonry: {
+			columnWidth: '.grid-sizer',
 		}
 	});
-	
-	$('#reccomended').owlCarousel({
-		center: true,
-		items: 2,
-		loop: true,
-		margin: 0,
-		responsive: {
-			0: {
-				items: 1
-			},
-			767: {
-				items: 2
-			},
-			1000: {
-				items: 3
-			},
-			1400: {
-				items: 4
-			}
-		}
+	// filter items on button click
+	$('.tr-movie-menu-active').on('click', 'button', function () {
+		var filterValue = $(this).attr('data-filter');
+		$grid.isotope({ filter: filterValue });
 	});
 
-	// Sticky filters
-	$(window).bind('load resize', function () {
-		var width = $(window).width();
-		if (width <= 991) {
-			$('.sticky_horizontal').stick_in_parent({
-				offset_top: 50
-			});
-		} else {
-			$('.sticky_horizontal').stick_in_parent({
-				offset_top: 73
-			});
-		}
+});
+//for menu active class
+$('.tr-movie-menu-active button').on('click', function (event) {
+	$(this).siblings('.active').removeClass('active');
+	$(this).addClass('active');
+	event.preventDefault();
+});
+
+
+/*=============================================
+	=    		 Aos Active  	         =
+=============================================*/
+function aosAnimation() {
+	AOS.init({
+		duration: 1000,
+		mirror: true,
+		once: true,
+		disable: 'mobile',
 	});
-	            
-	// Secondary nav scroll
-	var $sticky_nav= $('.secondary_nav');
-	$sticky_nav.find('a').on('click', function(e) {
-		e.preventDefault();
-		var target = this.hash;
-		var $target = $(target);
-		$('html, body').animate({
-			'scrollTop': $target.offset().top - 150
-		}, 800, 'swing');
+}
+
+
+/*=============================================
+	=    		 Wow Active  	         =
+=============================================*/
+function wowAnimation() {
+	var wow = new WOW({
+		boxClass: 'wow',
+		animateClass: 'animated',
+		offset: 0,
+		mobile: false,
+		live: true
 	});
-	$sticky_nav.find('ul li a').on('click', function () {
-		$sticky_nav.find('ul li a.active').removeClass('active');
-		$(this).addClass('active');
-	});
-	
-	// Faq section (updated v1.2)
-	$('#faq_box a[href^="#"]').on('click', function () {
-		if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') 
-			|| location.hostname == this.hostname) {
-			var target = $(this.hash);
-			target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-			   if (target.length) {
-				 $('html,body').animate({
-					 scrollTop: target.offset().top -185
-				}, 800);
-				return false;
-			}
-		}
-	});
-	$('ul#cat_nav li a').on('click', function () {
-		$('ul#cat_nav li a.active').removeClass('active');
-		$(this).addClass('active');
-	});
-	
-})(window.jQuery); 
+	wow.init();
+}
+
+
+})(jQuery);

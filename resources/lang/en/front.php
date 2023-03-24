@@ -5,6 +5,7 @@ if (\Illuminate\Support\Facades\Session::get('dil')=="tr"){
     return [
         'anasayfa' => 'Anasayfa',
         'hakkimizda' => 'Hakkımızda',
+        'kitaplik' => 'Kitaplık',
         'urunler' => 'Ürünler',
         'sarapoloji' => 'Şarapoloji',
         'markalar' => 'Markalar',
@@ -76,6 +77,7 @@ if (\Illuminate\Support\Facades\Session::get('dil')=="tr"){
     return [
         'anasayfa' => 'Home',
         'hakkimizda' => 'About Us',
+        'kitaplik' => 'Library',
         'kurumsal' => 'Institutional',
         'urunler' => 'Products',
         'sarapoloji' => 'Wineology',

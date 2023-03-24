@@ -9,5 +9,5 @@ class user extends Model
 {
     use HasFactory;
     protected $guarded =[];
-    protected $fillable=[];
+    protected $fillable=['firstname','lastname','email','phone','uyekategorisi','city','state','address','postal_code','picture','usergroup'];
 }

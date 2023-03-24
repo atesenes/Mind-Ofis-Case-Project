@@ -9,5 +9,5 @@ class siteBlogs extends Model
 {
     use HasFactory;
     protected $guarded=[];
-    protected $fillable=[];
+    protected $fillable=['baslik', 'image', 'kisaaciklama', 'icerik', 'ozet', 'seobaslik', 'seoaciklama', 'dil', 'diletiket', 'seourl', 'sira', 'durum'];
 }
